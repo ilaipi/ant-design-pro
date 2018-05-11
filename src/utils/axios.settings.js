@@ -24,8 +24,34 @@ const codeMessage = {
   504: '网关超时。',
 };
 
+/**
+ * 这里可以每个请求前，校验Cookie
+ * 前提是，登录请求完成后需要在Cookie中加入一个token，key是设置好的COOKIE_KEY
+ */
+axios.interceptors.request.use(config => {
+  // eslint-disable-line
+  // const { url } = config;
+  // if (/^\/api\//.test(url) && !checkCookie(COOKIE_KEY)) { // 含 /api/ 且 没有cookie
+  // const { dispatch } = store;
+  // dispatch(routerRedux.push('/login')); // 跳转到登录页
+  // }
+  // setCookie(COOKIE_KEY, getCookie(COOKIE_KEY), 1);
+  // return config
+});
+
 axios.interceptors.response.use(
-  response => response,
+  response => {
+    // refresh cookie
+    /* 这里可以每个请求完成后刷新Cookie的有效期
+     * 需要前后端保持统一的机制。
+     * 即，如果后端设置了session每个请求都刷新，前端这里才需要每次刷新
+     * 不然签到这里不需要每次刷新
+    const token = getCookie(COOKIE_KEY);
+    setCookie(COOKIE_KEY, token, 1);
+    return response;
+    */
+    return response;
+  },
   (error = {}) => {
     const {
       request: { responseURL } = {},
