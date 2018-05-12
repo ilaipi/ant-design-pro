@@ -184,7 +184,7 @@ class BasicLayout extends React.PureComponent {
   };
   filterMenu = () => {
     const { currentUser } = this.props;
-    const filtered = filterMenuData(currentUser.privalige && currentUser.privalige.menus);
+    const filtered = filterMenuData(currentUser.privilege && currentUser.privilege.menus);
     filtered.forEach(getRedirect);
     return filtered;
   };

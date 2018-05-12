@@ -10,7 +10,7 @@ export async function queryCurrent() {
     avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
     userid: '00000001',
     notifyCount: 12,
-    privalige: {
+    privilege: {
       menus: ['/form/basic-form'],
     },
   };
