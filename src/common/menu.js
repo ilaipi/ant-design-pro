@@ -1,3 +1,5 @@
+import { isEmpty } from 'lodash';
+
 import { isUrl } from '../utils/utils';
 
 const menuData = [
@@ -174,4 +176,35 @@ function formatter(data, parentPath = '/', parentAuthority) {
   });
 }
 
+const filterMenu = (menu, mapping, parent = '') => {
+  const currentPath = `${parent}/${menu.path}`;
+  if (!menu.children) return mapping[currentPath] && menu;
+  const filtered = { ...menu };
+  filtered.children = [];
+  for (const child of menu.children) {
+    const filteredChild = filterMenu(child, mapping, currentPath);
+    if (filteredChild) filtered.children.push(filteredChild);
+  }
+  if (isEmpty(filtered.children)) return;
+  return filtered;
+};
+
+/**
+ * @param { [String] } menus 有权限的菜单
+ */
+const filterMenuData = menus => {
+  // 默认有全部权限
+  if (isEmpty(menus)) return menuData;
+  const filteredMenus = [];
+  const mapping = {};
+  for (const m of menus) mapping[m] = true;
+  for (const menu of menuData) {
+    const filtered = filterMenu(menu, mapping);
+    if (filtered) filteredMenus.push(filtered);
+  }
+  return formatter(filteredMenus);
+};
+
 export const getMenuData = () => formatter(menuData);
+
+export { filterMenuData };

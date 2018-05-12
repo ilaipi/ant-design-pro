@@ -12,7 +12,7 @@ const modelNotExisted = (app, model) =>
   });
 
 // wrapper of dynamic
-const dynamicWrapper = (app, models, component) => {
+export const dynamicWrapper = (app, models, component) => {
   // () => require('module')
   // transformed by babel-plugin-dynamic-import-node-sync
   if (component.toString().indexOf('.then(') < 0) {
@@ -173,7 +173,8 @@ export const getRouterData = app => {
     // },
   };
   // Get name from ./menu.js or just set it in the router data.
-  const menuData = getFlatMenuData(getMenuData());
+  const src = getMenuData();
+  const menuData = getFlatMenuData(src);
 
   // Route configuration data
   // eg. {name,authority ...routerConfig }

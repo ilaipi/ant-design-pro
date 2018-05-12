@@ -26,6 +26,9 @@ const proxy = {
       avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
       userid: '00000001',
       notifyCount: 12,
+      privalige: {
+        menus: ['/form/basic-form'],
+      },
     },
   },
   // GET POST 可省略

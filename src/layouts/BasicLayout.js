@@ -8,17 +8,18 @@ import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
 import { enquireScreen, unenquireScreen } from 'enquire-js';
-import GlobalHeader from '../components/GlobalHeader';
-import GlobalFooter from '../components/GlobalFooter';
-import SiderMenu from '../components/SiderMenu';
+
+import GlobalHeader from 'components/GlobalHeader';
+import GlobalFooter from 'components/GlobalFooter';
+import SiderMenu from 'components/SiderMenu';
+
 import NotFound from '../routes/Exception/404';
+
 import { getRoutes } from '../utils/utils';
-import Authorized from '../utils/Authorized';
-import { getMenuData } from '../common/menu';
+import { getMenuData, filterMenuData } from '../common/menu';
 import logo from '../assets/logo.svg';
 
 const { Content, Header, Footer } = Layout;
-const { AuthorizedRoute, check } = Authorized;
 
 /**
  * 根据菜单取得重定向地址.
@@ -37,7 +38,6 @@ const getRedirect = item => {
     }
   }
 };
-getMenuData().forEach(getRedirect);
 
 /**
  * 获取面包屑映射
@@ -139,12 +139,15 @@ class BasicLayout extends React.PureComponent {
       urlParams.searchParams.delete('redirect');
       window.history.replaceState(null, 'redirect', urlParams.href);
     } else {
+      /**
       const { routerData } = this.props;
       // get the first authorized route path in routerData
       const authorizedPath = Object.keys(routerData).find(
         item => check(routerData[item].authority, item) && item !== '/'
       );
       return authorizedPath;
+      */
+      return '';
     }
     return redirect;
   };
@@ -179,6 +182,12 @@ class BasicLayout extends React.PureComponent {
       });
     }
   };
+  filterMenu = () => {
+    const { currentUser } = this.props;
+    const filtered = filterMenuData(currentUser.privalige && currentUser.privalige.menus);
+    filtered.forEach(getRedirect);
+    return filtered;
+  };
   render() {
     const {
       currentUser,
@@ -190,6 +199,7 @@ class BasicLayout extends React.PureComponent {
       location,
     } = this.props;
     const bashRedirect = this.getBashRedirect();
+    const menuData = this.filterMenu();
     const layout = (
       <Layout>
         <SiderMenu
@@ -197,8 +207,7 @@ class BasicLayout extends React.PureComponent {
           // 不带Authorized参数的情况下如果没有权限,会强制跳到403界面
           // If you do not have the Authorized parameter
           // you will be forced to jump to the 403 interface without permission
-          Authorized={Authorized}
-          menuData={getMenuData()}
+          menuData={menuData}
           collapsed={collapsed}
           location={location}
           isMobile={this.state.isMobile}
@@ -225,7 +234,7 @@ class BasicLayout extends React.PureComponent {
                 <Redirect key={item.from} exact from={item.from} to={item.to} />
               ))}
               {getRoutes(match.path, routerData).map(item => (
-                <AuthorizedRoute
+                <Route
                   key={item.key}
                   path={item.path}
                   component={item.component}
