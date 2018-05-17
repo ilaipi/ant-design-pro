@@ -4,8 +4,6 @@ import zhCN from 'antd/lib/locale-provider/zh_CN';
 import dynamic from 'dva/dynamic';
 import { routerRedux, Route, Switch } from 'dva/router';
 
-import UserLayout from 'layouts/UserLayout';
-
 import { getRouterData } from './common/router';
 import styles from './index.less';
 
@@ -17,6 +15,7 @@ dynamic.setDefaultLoadingComponent(() => {
 function RouterConfig({ history, app }) {
   const routerData = getRouterData(app);
   const BasicLayout = routerData['/'].component;
+  const UserLayout = routerData['/user'].component;
   return (
     <LocaleProvider locale={zhCN}>
       <ConnectedRouter history={history}>
