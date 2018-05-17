@@ -36,7 +36,7 @@ axios.interceptors.request.use(config => {
   // dispatch(routerRedux.push('/login')); // 跳转到登录页
   // }
   // setCookie(COOKIE_KEY, getCookie(COOKIE_KEY), 1);
-  // return config
+  return config;
 });
 
 axios.interceptors.response.use(
