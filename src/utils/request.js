@@ -19,16 +19,16 @@ const request = async (_options, method = 'GET') => {
  * @param { Object } 请求参数
  *  params GET请求参数
  */
-const get = (url, _options) => {
-  return request({ ..._options, url });
+const get = (url, params, _options) => {
+  return request({ ..._options, params, url });
 };
 /**
  * 封装post请求
  * @param { Object } 请求参数
  *  data POST请求请求参数，对象形式
  */
-const post = (url, _options) => {
-  return request({ ..._options, url }, 'POST');
+const post = (url, data, _options) => {
+  return request({ ..._options, data, url }, 'POST');
 };
 
 export { get, post, request };
