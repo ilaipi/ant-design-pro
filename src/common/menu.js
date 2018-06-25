@@ -194,7 +194,7 @@ const filterMenu = (menu, mapping, parent = '') => {
  */
 const filterMenuData = menus => {
   // 默认有全部权限
-  if (isEmpty(menus)) return menuData;
+  if (isEmpty(menus)) return formatter(menuData);
   const filteredMenus = [];
   const mapping = {};
   for (const m of menus) mapping[m] = true;
