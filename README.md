@@ -10,7 +10,7 @@
 
 ### 动态菜单
 在`currentUser`中增加`privilege`，：
-```json
+```javascript
 {
   name: 'Serati Ma',
   privilege: {
