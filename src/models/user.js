@@ -1,13 +1,14 @@
 import { routerRedux } from 'dva/router';
 
-import { query as queryUsers, queryCurrent, login, logout } from '../services/user';
+import { query as queryUsers, login, logout } from '../services/user';
+import { COOKIE_KEY, AUTH_INFO } from './../common/consts';
+import { setCookie } from './../utils/cookie';
 
 export default {
   namespace: 'user',
 
   state: {
     list: [],
-    currentUser: {},
     status: undefined,
   },
 
@@ -21,15 +22,16 @@ export default {
           status: 'authed',
         },
       });
-      yield put({
-        type: 'saveCurrentUser',
-        payload: data,
-      });
-      yield put(routerRedux.push(data.homepage || '/requirement/baidu-spider'));
+      // 登录后设置Cookie，用户信息放进localStorage
+      setCookie(COOKIE_KEY, data.id, 1);
+      window.localStorage.setItem(AUTH_INFO, JSON.stringify(data));
+      yield put(routerRedux.push(data.homepage || '/pthx/signup'));
     },
     *logout(_, { call, put, select }) {
       try {
         yield call(logout);
+        // delete cookie
+        // remove localStorage
         // get location pathname
         const urlParams = new URL(window.location.href);
         const pathname = yield select(state => state.routing.location.pathname);
@@ -53,13 +55,6 @@ export default {
         payload: response,
       });
     },
-    *fetchCurrent(_, { call, put }) {
-      const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
-    },
   },
 
   reducers: {
@@ -67,12 +62,6 @@ export default {
       return {
         ...state,
         list: action.payload,
-      };
-    },
-    saveCurrentUser(state, action) {
-      return {
-        ...state,
-        currentUser: action.payload,
       };
     },
     changeLoginStatus(state, { payload }) {

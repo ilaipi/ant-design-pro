@@ -3,6 +3,8 @@ import { notification } from 'antd';
 import { routerRedux } from 'dva/router';
 
 import store from '../index';
+import { checkCookie } from './cookie';
+import { COOKIE_KEY, AUTH_INFO } from './../common/consts';
 
 axios.defaults.withCredentials = true;
 
@@ -29,13 +31,13 @@ const codeMessage = {
  * 前提是，登录请求完成后需要在Cookie中加入一个token，key是设置好的COOKIE_KEY
  */
 axios.interceptors.request.use(config => {
-  // eslint-disable-line
-  // const { url } = config;
-  // if (/^\/api\//.test(url) && !checkCookie(COOKIE_KEY)) { // 含 /api/ 且 没有cookie
-  // const { dispatch } = store;
-  // dispatch(routerRedux.push('/login')); // 跳转到登录页
-  // }
-  // setCookie(COOKIE_KEY, getCookie(COOKIE_KEY), 1);
+  const { url } = config;
+  const authInfo = window.localStorage.getItem(AUTH_INFO);
+  if (/^\/api\//.test(url) && (!checkCookie(COOKIE_KEY) || !authInfo)) {
+    // 含 /api/ 且 没有cookie或没有登录用户
+    const { dispatch } = store;
+    dispatch(routerRedux.push('/user/login')); // 跳转到登录页
+  }
   return config;
 });
 

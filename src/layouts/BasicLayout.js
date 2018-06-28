@@ -17,6 +17,7 @@ import NotFound from '../routes/Exception/404';
 
 import { getRoutes } from '../utils/utils';
 import { getMenuData, filterMenuData } from '../common/menu';
+import { AUTH_INFO } from '../common/consts';
 import logo from '../assets/logo.svg';
 
 const { Content, Header, Footer } = Layout;
@@ -91,6 +92,7 @@ class BasicLayout extends React.PureComponent {
   };
   state = {
     isMobile,
+    currentUser: {},
   };
   getChildContext() {
     const { location, routerData } = this.props;
@@ -105,9 +107,7 @@ class BasicLayout extends React.PureComponent {
         isMobile: mobile,
       });
     });
-    this.props.dispatch({
-      type: 'user/fetchCurrent',
-    });
+    this.loadCurrentUser();
   }
   componentWillUnmount() {
     unenquireScreen(this.enquireHandler);
@@ -151,6 +151,12 @@ class BasicLayout extends React.PureComponent {
     }
     return redirect;
   };
+  loadCurrentUser = () => {
+    const currentUser = JSON.parse(window.localStorage.getItem(AUTH_INFO));
+    currentUser.avatar =
+      currentUser.avatar || 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
+    this.setState({ currentUser });
+  };
   handleMenuCollapse = collapsed => {
     this.props.dispatch({
       type: 'global/changeLayoutCollapsed',
@@ -183,21 +189,14 @@ class BasicLayout extends React.PureComponent {
     }
   };
   filterMenu = () => {
-    const { currentUser } = this.props;
+    const { currentUser } = this.state;
     const filtered = filterMenuData(currentUser.privilege && currentUser.privilege.menus);
     filtered.forEach(getRedirect);
     return filtered;
   };
   render() {
-    const {
-      currentUser,
-      collapsed,
-      fetchingNotices,
-      notices,
-      routerData,
-      match,
-      location,
-    } = this.props;
+    const { currentUser } = this.state;
+    const { collapsed, fetchingNotices, notices, routerData, match, location } = this.props;
     const bashRedirect = this.getBashRedirect();
     const menuData = this.filterMenu();
     const layout = (
@@ -290,8 +289,7 @@ class BasicLayout extends React.PureComponent {
   }
 }
 
-export default connect(({ user, global, loading }) => ({
-  currentUser: user.currentUser,
+export default connect(({ global, loading }) => ({
   collapsed: global.collapsed,
   fetchingNotices: loading.effects['global/fetchNotices'],
   notices: global.notices,
