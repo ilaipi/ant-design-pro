@@ -60,7 +60,7 @@ axios.interceptors.response.use(
     const { dispatch } = store;
     const text = codeMessage[status] || statusText || msg;
     if (status === 401) {
-      dispatch(routerRedux.push('/login/login'));
+      dispatch(routerRedux.push('/user/login'));
     }
     if (status === 403) {
       dispatch(routerRedux.push('/exception/403'));

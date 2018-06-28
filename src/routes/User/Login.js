@@ -7,9 +7,9 @@ import styles from './Login.less';
 
 const { Tab, UserName, Password, Mobile, Captcha, Submit } = Login;
 
-@connect(({ login, loading }) => ({
-  login,
-  submitting: loading.effects['login/login'],
+@connect(({ user, loading }) => ({
+  user,
+  submitting: loading.effects['user/login'],
 }))
 export default class LoginPage extends Component {
   state = {
@@ -25,7 +25,7 @@ export default class LoginPage extends Component {
     const { type } = this.state;
     if (!err) {
       this.props.dispatch({
-        type: 'login/login',
+        type: 'user/login',
         payload: {
           ...values,
           type,
@@ -45,23 +45,23 @@ export default class LoginPage extends Component {
   };
 
   render() {
-    const { login, submitting } = this.props;
+    const { user, submitting } = this.props;
     const { type } = this.state;
     return (
       <div className={styles.main}>
         <Login defaultActiveKey={type} onTabChange={this.onTabChange} onSubmit={this.handleSubmit}>
           <Tab key="account" tab="账户密码登录">
-            {login.status === 'error' &&
-              login.type === 'account' &&
-              !login.submitting &&
+            {user.status === 'error' &&
+              type === 'account' &&
+              !user.submitting &&
               this.renderMessage('账户或密码错误（admin/888888）')}
-            <UserName name="userName" placeholder="admin/user" />
+            <UserName name="username" placeholder="admin/user" />
             <Password name="password" placeholder="888888/123456" />
           </Tab>
           <Tab key="mobile" tab="手机号登录">
-            {login.status === 'error' &&
-              login.type === 'mobile' &&
-              !login.submitting &&
+            {user.status === 'error' &&
+              type === 'mobile' &&
+              !user.submitting &&
               this.renderMessage('验证码错误')}
             <Mobile name="mobile" />
             <Captcha name="captcha" />
