@@ -152,7 +152,7 @@ class BasicLayout extends React.PureComponent {
     return redirect;
   };
   loadCurrentUser = () => {
-    const currentUser = JSON.parse(window.localStorage.getItem(AUTH_INFO));
+    const currentUser = JSON.parse(window.localStorage.getItem(AUTH_INFO)) || {};
     currentUser.avatar =
       currentUser.avatar || 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png';
     this.setState({ currentUser });
